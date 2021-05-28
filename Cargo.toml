@@ -9,3 +9,5 @@ edition = "2018"
 [dependencies]
 reqwest = { version = "0.11", features = ["blocking", "json"] }
 serde = { version = "1.0", features = ["derive"] }
+egg-mode = { git = "https://github.com/egg-mode-rs/egg-mode", rev = "6b81073eba9" }
+tokio = { version = "1.6", features = ["rt", "macros"] }
