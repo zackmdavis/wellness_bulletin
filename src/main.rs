@@ -55,6 +55,7 @@ fn oura_request(endpoint: &str) -> Result<reqwest::blocking::Response, Box<dyn s
 }
 
 enum WellnessDomain {
+    #[allow(dead_code)]
     Activity,
     Sleep,
 }
@@ -72,7 +73,7 @@ fn bulletin(wellness_domain: WellnessDomain) -> Result<String, Box<dyn std::erro
             let response = oura_request("sleep")?;
             let sleep_summaries = response.json::<SleepResponse>()?;
             let latest = &sleep_summaries.sleep[sleep_summaries.sleep.len()-1];
-            Ok(format!("Date: {}, Score: {}", latest.summary_date, latest.score))
+            Ok(latest.short_bulletin())
         },
     }
 }
@@ -80,7 +81,8 @@ fn bulletin(wellness_domain: WellnessDomain) -> Result<String, Box<dyn std::erro
 #[tokio::main]
 async fn main() {
     println!("Hello wellness world!");
-    let token = construct_twitter_token().expect("I hope this works");
-    let tweet = DraftTweet::new("Hello egg-mode World!");
+    let token = construct_twitter_token().expect("secrets files should exist");
+    let sleep_bulletin = bulletin(WellnessDomain::Sleep).expect("should've gotten Oura data");
+    let tweet = DraftTweet::new(sleep_bulletin);
     tweet.send(&token).await.unwrap();
 }
