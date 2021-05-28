@@ -3,6 +3,7 @@ use std::time::Duration;
 
 use reqwest::header;
 use egg_mode::tweet::DraftTweet;
+use tokio::task::spawn_blocking;
 
 mod activity;
 mod sleep;
@@ -38,7 +39,6 @@ fn construct_twitter_token() -> Result<egg_mode::Token, Box<dyn std::error::Erro
 fn oura_request(endpoint: &str) -> Result<reqwest::blocking::Response, Box<dyn std::error::Error>> {
     let token_file_content = read_oura_access_token()?;
     let access_token = token_file_content.trim_end();
-    println!("{:?}", access_token);
 
     let mut headers = header::HeaderMap::new();
     let mut auth_header_value = header::HeaderValue::from_str(&format!("Bearer {}", access_token))?;
@@ -82,7 +82,9 @@ fn bulletin(wellness_domain: WellnessDomain) -> Result<String, Box<dyn std::erro
 async fn main() {
     println!("Hello wellness world!");
     let token = construct_twitter_token().expect("secrets files should exist");
-    let sleep_bulletin = bulletin(WellnessDomain::Sleep).expect("should've gotten Oura data");
+    let sleep_bulletin = spawn_blocking(move || {
+        bulletin(WellnessDomain::Sleep).expect("should've gotten Oura data")
+    }).await.expect("hope I know what I'm doing");
     let tweet = DraftTweet::new(sleep_bulletin);
     tweet.send(&token).await.unwrap();
 }
