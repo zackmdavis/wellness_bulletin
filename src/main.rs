@@ -3,6 +3,9 @@ use std::time::Duration;
 
 use reqwest::header;
 
+mod activity;
+use activity::ActivityResponse;
+
 fn read_access_token() -> Result<String, std::io::Error> {
     fs::read_to_string(".oura_access_token")
 }
@@ -23,7 +26,8 @@ fn activity_bulletin() -> Result<(), Box<dyn std::error::Error>> {
         .build()?;
 
     let response = client.get("https://api.ouraring.com/v1/activity").send()?;
-    println!("{:?}", response);
+    let activity_summaries = response.json::<ActivityResponse>()?;
+    println!("{:?}", activity_summaries);
 
     Ok(())
 }
