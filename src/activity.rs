@@ -2,6 +2,7 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct ActivityDaySummary {
+    pub summary_date: String,
     pub met_min_high: i64,
     pub cal_active: i64,
     pub score_training_volume: i64,
@@ -25,7 +26,6 @@ pub struct ActivityDaySummary {
     pub score_meet_daily_targets: i64,
     pub total: i64,
     pub met_min_medium: i64,
-    pub summary_date: String,
     pub score_stay_active: i64,
     pub average_met: f64,
     pub non_wear: i64,
@@ -42,5 +42,5 @@ pub struct ActivityDaySummary {
 
 #[derive(Debug, Deserialize)]
 pub struct ActivityResponse {
-    activity: Vec<ActivityDaySummary>,
+    pub activity: Vec<ActivityDaySummary>,
 }
