@@ -26,7 +26,7 @@ pub struct SleepNightSummary {
     pub restless: i64,
     pub efficiency: i64,
     pub midpoint_time: i64,
-    pub hr_lowest: i64,
+    pub hr_lowest: f64,
     pub hr_average: f64,
     pub rmssd: i64,
     pub breath_average: f64, // example was an int
